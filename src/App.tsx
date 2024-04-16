@@ -1,15 +1,18 @@
 import { useState } from "react";
 import "./App.css";
 import ComboBox from "./components/AutoComplete";
+import { IMovie } from "./assets/movies";
 
 function App() {
-  const [movies, setMovies] = useState<string[]>([]);
-  const [selectedmovie, setSelectedmovie] = useState("");
+  const [movies, setMovies] = useState<IMovie[]>([]);
+  const [selectedmovie, setSelectedmovie] = useState<IMovie>({} as IMovie);
   const addMovie = () => {
-    if (selectedmovie === "") return;
-    if (movies.includes(selectedmovie)) return;
+    if (selectedmovie === null) return;
+    if (selectedmovie?.title === "") return;
+
+    if (movies.find((movie) => movie.title === selectedmovie?.title)) return;
     setMovies([...movies, selectedmovie]);
-    setSelectedmovie("");
+    setSelectedmovie({} as IMovie);
   };
 
   return (
@@ -50,9 +53,17 @@ function App() {
               key={index}
               className="flex flex-col w-1/6 bg-gray-200 p-4 m-4 rounded-lg"
             >
-              <img src="https://via.placeholder.com/150" alt="movie" />
+              <img
+                src={
+                  "https://image.tmdb.org/t/p/w600_and_h900_bestv2/" +
+                  movie.poster_path
+                }
+                alt="movie"
+              />
               <h1 className="text-center text-xl">
-                {movie.length > 20 ? `${movie.slice(0, 20)}...` : movie}
+                {movie.title.length > 20
+                  ? `${movie.title.slice(0, 20)}...`
+                  : movie.title}
               </h1>
             </div>
           ))}

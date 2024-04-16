@@ -3,6 +3,15 @@ import "./App.css";
 import ComboBox from "./components/AutoComplete";
 
 function App() {
+  const [movies, setMovies] = useState<string[]>([]);
+  const [selectedmovie, setSelectedmovie] = useState("");
+  const addMovie = () => {
+    if (selectedmovie === "") return;
+    if (movies.includes(selectedmovie)) return;
+    setMovies([...movies, selectedmovie]);
+    setSelectedmovie("");
+  };
+
   return (
     <>
       <div className="flex flex-col">
@@ -17,10 +26,16 @@ function App() {
         </div>
         <div className="h-10"></div>
         <div className="flex justify-center  w-full gap-4">
-          <ComboBox />
+          <ComboBox
+            setSelectedmovie={setSelectedmovie}
+            selctedmovie={selectedmovie}
+          />
 
           {/* add button  */}
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={addMovie}
+          >
             Add Movie
           </button>
         </div>
@@ -30,13 +45,15 @@ function App() {
           <h1 className="text-2xl">Selected Movies</h1>
         </div>
         <div className="flex justify-center flex-wrap">
-          {Array.from({ length: 10 }).map((_, index) => (
+          {movies.map((movie, index) => (
             <div
               key={index}
               className="flex flex-col w-1/6 bg-gray-200 p-4 m-4 rounded-lg"
             >
               <img src="https://via.placeholder.com/150" alt="movie" />
-              <h1 className="text-center text-xl">Movie Name</h1>
+              <h1 className="text-center text-xl">
+                {movie.length > 20 ? `${movie.slice(0, 20)}...` : movie}
+              </h1>
             </div>
           ))}
         </div>

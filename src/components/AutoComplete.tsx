@@ -2,7 +2,17 @@ import * as React from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
-export default function ComboBox() {
+export default function ComboBox({
+  setSelectedmovie,
+  selctedmovie,
+}: {
+  setSelectedmovie: React.Dispatch<React.SetStateAction<string>>;
+  selctedmovie: string;
+}) {
+  const getyearfromlabel = (label: string) => {
+    const movie = top100Films.find((movie) => movie.label === label);
+    return movie?.year || 0;
+  };
   return (
     <Autocomplete
       disablePortal
@@ -11,6 +21,13 @@ export default function ComboBox() {
       options={top100Films}
       sx={{ width: 300 }}
       renderInput={(params) => <TextField {...params} label="Movie" />}
+      onChange={(event, value) => {
+        setSelectedmovie(value?.label || "");
+      }}
+      value={{
+        label: selctedmovie,
+        year: getyearfromlabel(selctedmovie),
+      }}
     />
   );
 }

@@ -76,7 +76,6 @@ def hello():
 
 @app.route('/movies', methods=[ 'POST'])
 def get_movies():
-    # logging.debug('Received POST request with headers: %s', request.headers)
     print(request.json)
     return jsonify(selected_movies)
 

@@ -1,7 +1,7 @@
 import React from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import { IMovie } from "../assets/movies";
+import { IMovie, movies } from "../assets/movies";
 import { searchMovie } from "../assets/functions";
 // import fs
 export default function ComboBox({
@@ -11,7 +11,7 @@ export default function ComboBox({
   setSelectedmovie: React.Dispatch<React.SetStateAction<IMovie>>;
   selctedmovie: IMovie;
 }) {
-  const [moviesinputs, setmoviesinputs] = React.useState([] as IMovie[]);
+  const [moviesinputs, setmoviesinputs] = React.useState(movies.slice(0, 10));
   return (
     <Autocomplete
       disablePortal

@@ -14,3 +14,6 @@ export const searchMovie = (movie: string) => {
   }
   return returnedmovies;
 };
+export const take1decimals = (num: number) => {
+  return Math.round(num * 10) / 10;
+};

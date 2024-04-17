@@ -17,3 +17,7 @@ export const searchMovie = (movie: string) => {
 export const take1decimals = (num: number) => {
   return Math.round(num * 10) / 10;
 };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const checkIfObjectIsEmpty = (obj: any) => {
+  return Object.keys(obj).length === 0;
+};

@@ -1,0 +1,136 @@
+:root {
+  --active-link: #007bff;
+  --dark-gray: #333;
+  --gray-color: #666;
+  --onerem: 10px;
+  --tworem: 20px;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: var(--tworem);
+  background-color: #fff;
+  padding: 5px;
+  border-radius: 2px;
+
+  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
+  min-width: 300px;
+  max-width: 100rem;
+  background: repeating-conic-gradient(
+    from var(--a),
+    var(--toastcolor) 0,
+    var(--toastcolor) 5%,
+    #fff 5%,
+    #fff 40%,
+    var(--toastcolor) 50%
+  );
+  animation: spin 4s infinite linear;
+  z-index: 9999;
+}
+.toast::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background-color: #fff;
+}
+.toast__content {
+  display: flex;
+  align-items: center;
+  gap: var(--tworem);
+  z-index: 5;
+  background-color: #fff;
+  padding: 7px 20px;
+}
+.toast__content__icon {
+  font-size: var(--tworem);
+  scale: 1.5;
+}
+.toast__content__icon__success {
+  color: #28b828;
+}
+.toast__content__icon__error {
+  color: #c91e1e;
+}
+.toast__content__icon__info {
+  color: #007bff;
+}
+.toast__content__icon__warning {
+  color: #e3450c;
+}
+.toast__content__message {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.toast__content__message__title {
+  font-size: 20px;
+  font-weight: bold;
+}
+.toast__content__message__title__success {
+  color: #28b828;
+}
+.toast__content__message__title__error {
+  color: #c91e1e;
+}
+.toast__content__message__title__info {
+  color: #007bff;
+}
+.toast__content__message__title__warning {
+  color: #e3450c;
+}
+.toast__content__message__body {
+  font-size: 15px;
+  color: var(--dark-gray);
+  word-break: break-word;
+}
+.toast__close {
+  font-size: 16px;
+  color: var(--gray-color);
+  cursor: pointer;
+  display: flex;
+  z-index: 7;
+  padding-right: 1rem;
+}
+
+.toast__success {
+  --toastcolor: rgb(40, 184, 40);
+}
+
+.toast__error {
+  --toastcolor: rgb(201, 30, 30);
+}
+
+.toast__info {
+  --toastcolor: var(--active-link);
+}
+
+.toast__warning {
+  --toastcolor: rgb(227, 69, 12);
+}
+
+@property --toastcolor {
+  syntax: "<color>";
+  initial-value: var(--active-link);
+  inherits: false;
+}
+
+@property --a {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes spin {
+  0% {
+    --a: 0deg;
+  }
+  100% {
+    --a: 360deg;
+  }
+}

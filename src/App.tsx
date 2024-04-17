@@ -3,23 +3,34 @@ import "./App.css";
 import ComboBox from "./components/AutoComplete";
 import { IMovie } from "./assets/movies";
 import { sendMovies } from "./api/movies";
-import { take1decimals } from "./assets/functions";
+import { checkIfObjectIsEmpty, take1decimals } from "./assets/functions";
+import { ToastContextType } from "./contexts/toast/toast";
+import { useToast } from "./hooks/useToast";
 
 function App() {
   const [movies, setMovies] = useState<IMovie[]>([]);
+  const { toggleToast }: ToastContextType = useToast();
 
   const [selectedmovie, setSelectedmovie] = useState<IMovie>({} as IMovie);
   const [loading, setLoading] = useState(false);
   const [Recomandadmovies, setRecomandadmovies] = useState([] as IMovie[]);
   const addMovie = () => {
-    if (selectedmovie === null) return;
-    if (selectedmovie?.title === "") return;
+    if (selectedmovie === null || checkIfObjectIsEmpty(selectedmovie)) {
+      toggleToast("Please select a movie", "warning");
+      return;
+    }
+    if (selectedmovie?.title === "") {
+      toggleToast("Please select a movie", "warning");
+      return;
+    }
 
-    if (movies.find((movie) => movie.title === selectedmovie?.title)) return;
+    if (movies.find((movie) => movie.title === selectedmovie?.title)) {
+      toggleToast("Movie already added", "warning");
+      return;
+    }
     setMovies([...movies, selectedmovie]);
     setSelectedmovie({} as IMovie);
   };
-
   return (
     <>
       <div className="flex flex-col">

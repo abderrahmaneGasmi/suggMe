@@ -1,9 +1,16 @@
-
+from flask import Flask, jsonify, request
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MultiLabelBinarizer    
+import logging
+from flask_cors import CORS
+logging.basicConfig(level=logging.DEBUG)
 jsonfile = 'moviescleaned.json'
 movies_df = pd.read_json(jsonfile)
+selected_moviesdataf = movies_df.sample(5)
+
+# make selected_movies as dictionary 
+selected_movies = selected_moviesdataf.to_dict('records')
 def removeduplicateitemsinlist(listsw):
     return list(set(listsw))
 def removewhitesspacesinlist(listsw):
@@ -11,10 +18,7 @@ def removewhitesspacesinlist(listsw):
 # Sample movie DataFrame (replace with your actual DataFrame)
 def getrecomandadbasedonfiltering():
 
-    selected_moviesdataf = movies_df.sample(5)
 
-    # make selected_movies as dictionary 
-    selected_movies = selected_moviesdataf.to_dict('records')
 
 
     # Aggregate selected movie attributes
@@ -60,19 +64,21 @@ def getrecomandadbasedonfiltering():
     print( "recomandad with no score average", filtered_movies_df)
     print("Top recommended movies with score average:", top_recommendations_titles)
 
-from flask import Flask, jsonify, request
+
 
 app = Flask(__name__)
 
-
+CORS(app)
 # Define routes and functions
 @app.route('/')
 def hello():
     return 'Hello, World!'
 
-@app.route('/movies', methods=['GET'])
+@app.route('/movies', methods=[ 'POST'])
 def get_movies():
-    return jsonify(movies_df.to_dict('records'))
+    # logging.debug('Received POST request with headers: %s', request.headers)
+    print(request.json)
+    return jsonify(selected_movies)
 
 
 if __name__ == '__main__':

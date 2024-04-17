@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 import ComboBox from "./components/AutoComplete";
 import { IMovie } from "./assets/movies";
+import { sendMovies } from "./api/movies";
 
 function App() {
   const [movies, setMovies] = useState<IMovie[]>([]);
@@ -70,7 +71,14 @@ function App() {
           ))}
         </div>
         {/* add button  */}
-        <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded self-center text-2xl">
+        <button
+          className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded self-center text-2xl"
+          onClick={() => {
+            sendMovies(movies).then((data) => {
+              console.log(data);
+            });
+          }}
+        >
           Generate Recommendations
         </button>
         <div className="h-4"></div>

@@ -38,6 +38,7 @@ function App() {
           />
 
           {/* add button  */}
+
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             onClick={addMovie}
@@ -72,20 +73,23 @@ function App() {
           ))}
         </div>
         {/* add button  */}
-        {Recomandadmovies.length == 0 && (
-          <button
-            className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded self-center text-2xl"
-            onClick={() => {
-              sendMovies(movies).then((data) => {
-                setRecomandadmovies(data);
-              });
-            }}
-          >
-            Generate Recommendations
-          </button>
-        )}
 
-        <div className="h-10"></div>
+        <button
+          className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded self-center text-2xl"
+          onClick={() => {
+            Recomandadmovies.length === 0
+              ? sendMovies(movies).then((data) => {
+                  setRecomandadmovies(data);
+                })
+              : setRecomandadmovies([]);
+          }}
+        >
+          {Recomandadmovies.length == 0
+            ? "Generate Recommendations"
+            : "Regenerate Recommendations"}
+        </button>
+
+        <div className="h-4"></div>
 
         {Recomandadmovies.length > 0 && (
           <>

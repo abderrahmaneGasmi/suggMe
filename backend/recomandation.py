@@ -10,13 +10,13 @@ movies_df = pd.read_json(jsonfile)
 selected_moviesdataf = movies_df.sample(5)
 
 # make selected_movies as dictionary 
-selected_movies = selected_moviesdataf.to_dict('records')
+selected_moviesws = selected_moviesdataf.to_dict('records')
 def removeduplicateitemsinlist(listsw):
     return list(set(listsw))
 def removewhitesspacesinlist(listsw):
     return [x.strip() for x in listsw]
 # Sample movie DataFrame (replace with your actual DataFrame)
-def getrecomandadbasedonfiltering():
+def getrecomandadbasedonfiltering(selected_movies):
 
 
 
@@ -48,7 +48,8 @@ def getrecomandadbasedonfiltering():
     filtered_movies_df = filtered_movies_df[
         (filtered_movies_df.loc[:, selected_genres].sum(axis=1) > 0) &
         (filtered_movies_df.loc[:, selected_original_languages].sum(axis=1) > 0) 
-        &(filtered_movies_df.loc[:, selected_production_companies].sum(axis=1) > 0) 
+        &
+        (filtered_movies_df.loc[:, selected_production_companies].sum(axis=1) > 0) 
 
         
         ]
@@ -59,12 +60,15 @@ def getrecomandadbasedonfiltering():
     similarity_scores = cosine_similarity(selected_movies_features, all_movies_features)
 
     top_recommendations_indices = similarity_scores.argsort()[0][::-1]  # Indices of most similar movies
-    top_recommendations_titles = movies_df.iloc[top_recommendations_indices]['title']
-    print("Selected movies:", selected_moviesdataf['title'])
-    print( "recomandad with no score average", filtered_movies_df)
-    print("Top recommended movies with score average:", top_recommendations_titles)
+    top_recommendations_titles = movies_df.iloc[top_recommendations_indices]
+    # remove selected movies from the top recommendations
+    top_recommendations_titles = top_recommendations_titles[~top_recommendations_titles['title'].isin([movie['title'] for movie in selected_movies])]
+    
+    filtered_movies_df = filtered_movies_df[~filtered_movies_df['title'].isin([movie['title'] for movie in selected_movies])]
+    return filtered_movies_df
 
-
+def getmoviesfromtitles(titles):
+    return movies_df[movies_df['title'].isin(titles)].to_dict('records')
 
 app = Flask(__name__)
 
@@ -76,8 +80,16 @@ def hello():
 
 @app.route('/movies', methods=[ 'POST'])
 def get_movies():
-    print(request.json)
-    return jsonify(selected_movies)
+    movies = request.json
+    # convert movies to dictionary
+    # movies = [movie.to_dict() for movie in movies]
+    moviesdemanded = getmoviesfromtitles(
+        [movie['title'] for movie in movies]
+    )
+    predictions = getrecomandadbasedonfiltering(moviesdemanded)
+    # return 10 items from the predictions
+    return jsonify(predictions[:10].to_dict('records'))
+
 
 
 if __name__ == '__main__':

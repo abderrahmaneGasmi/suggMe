@@ -8,6 +8,7 @@ function App() {
   const [movies, setMovies] = useState<IMovie[]>([]);
 
   const [selectedmovie, setSelectedmovie] = useState<IMovie>({} as IMovie);
+  const [loading, setLoading] = useState(false);
   const [Recomandadmovies, setRecomandadmovies] = useState([] as IMovie[]);
   const addMovie = () => {
     if (selectedmovie === null) return;
@@ -73,24 +74,43 @@ function App() {
           ))}
         </div>
         {/* add button  */}
-
-        <button
-          className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded self-center text-2xl"
-          onClick={() => {
-            Recomandadmovies.length === 0
-              ? sendMovies(movies).then((data) => {
+        {!loading && (
+          <button
+            className="mt-8 bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded self-center text-2xl"
+            onClick={() => {
+              if (Recomandadmovies.length === 0) {
+                setLoading(true);
+                sendMovies(movies).then((data) => {
                   setRecomandadmovies(data);
-                })
-              : setRecomandadmovies([]);
-          }}
-        >
-          {Recomandadmovies.length == 0
-            ? "Generate Recommendations"
-            : "Regenerate Recommendations"}
-        </button>
+                  setTimeout(() => {
+                    setLoading(false);
+                  }, 1000);
+                });
+              } else setRecomandadmovies([]);
+            }}
+          >
+            {Recomandadmovies.length == 0
+              ? "Generate Recommendations"
+              : "Regenerate Recommendations"}
+          </button>
+        )}
 
         <div className="h-4"></div>
-
+        {loading && (
+          <div className="flex justify-center flex-wrap">
+            {Array(10)
+              .fill(0)
+              .map((_, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col w-1/6 bg-gray-400 p-4 m-4 rounded-lg animate-pulse"
+                >
+                  <div className="bg-gray-600 w-full h-64"></div>
+                  <div className="bg-gray-600 w-1/2 h-6 mt-2"></div>
+                </div>
+              ))}
+          </div>
+        )}
         {Recomandadmovies.length > 0 && (
           <>
             {" "}

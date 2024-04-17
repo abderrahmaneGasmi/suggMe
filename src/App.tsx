@@ -1,10 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import ComboBox from "./components/AutoComplete";
 import { IMovie } from "./assets/movies";
 
 function App() {
   const [movies, setMovies] = useState<IMovie[]>([]);
+
   const [selectedmovie, setSelectedmovie] = useState<IMovie>({} as IMovie);
   const addMovie = () => {
     if (selectedmovie === null) return;

@@ -7,13 +7,24 @@ import { checkIfObjectIsEmpty, take1decimals } from "./assets/functions";
 import { ToastContextType } from "./contexts/toast/toast";
 import { useToast } from "./hooks/useToast";
 import { motion } from "framer-motion";
+import ControlledRadioButtonsGroup from "./components/RadioGroup";
+import DiscreteSlider from "./components/Slider";
 function App() {
   const [movies, setMovies] = useState<IMovie[]>([]);
   const { toggleToast }: ToastContextType = useToast();
-
+  const [recomandationvars, setRecomandationvars] = useState({
+    type: "score" as string,
+    items: 10,
+  });
   const [selectedmovie, setSelectedmovie] = useState<IMovie>({} as IMovie);
   const [loading, setLoading] = useState(false);
   const [Recomandadmovies, setRecomandadmovies] = useState([] as IMovie[]);
+  const updatetype = (type: string) => {
+    setRecomandationvars({ ...recomandationvars, type });
+  };
+  const updateitems = (items: number) => {
+    setRecomandationvars({ ...recomandationvars, items });
+  };
   const addMovie = () => {
     if (selectedmovie === null || checkIfObjectIsEmpty(selectedmovie)) {
       toggleToast("Please select a movie", "warning");
@@ -148,27 +159,55 @@ function App() {
             </motion.div>
             {/* add button  */}
             {!loading && (
-              <motion.button
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1 }}
-                className="mt-8 bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded self-center text-2xl"
-                onClick={() => {
-                  if (Recomandadmovies.length === 0) {
-                    setLoading(true);
-                    sendMovies(movies).then((data) => {
-                      setRecomandadmovies(data);
-                      setTimeout(() => {
-                        setLoading(false);
-                      }, 1000);
-                    });
-                  } else setRecomandadmovies([]);
-                }}
-              >
-                {Recomandadmovies.length == 0
-                  ? "Generate Recommendations"
-                  : "Regenerate Recommendations"}
-              </motion.button>
+              <div className="flex w-full justify-center ">
+                <div className="flex flex-col justify-center border-2  border-gray-200 mt-8 p-4 gap-4 shadow-lg rounded-lg">
+                  <ControlledRadioButtonsGroup
+                    value={recomandationvars.type}
+                    setValue={updatetype}
+                    title="Recomandation Type"
+                    values={[
+                      {
+                        value: "score",
+                        label: "Recommendation based on Score",
+                      },
+                      {
+                        value: "filter",
+                        label: "Recommendation based on Filter",
+                      },
+                    ]}
+                  />
+                  <DiscreteSlider
+                    label="Movies"
+                    min={5}
+                    max={30}
+                    step={5}
+                    labelDisplay="movie"
+                    value={recomandationvars.items}
+                    updateValue={updateitems}
+                  />
+                  <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1 }}
+                    className=" bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded self-center text-2xl"
+                    onClick={() => {
+                      if (Recomandadmovies.length === 0) {
+                        setLoading(true);
+                        sendMovies(movies).then((data) => {
+                          setRecomandadmovies(data);
+                          setTimeout(() => {
+                            setLoading(false);
+                          }, 1000);
+                        });
+                      } else setRecomandadmovies([]);
+                    }}
+                  >
+                    {Recomandadmovies.length == 0
+                      ? "Generate Recommendations"
+                      : "Regenerate Recommendations"}
+                  </motion.button>
+                </div>
+              </div>
             )}
 
             <div className="h-4"></div>

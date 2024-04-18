@@ -55,31 +55,47 @@ function App() {
           </h1>
         </div>
         <div className="h-10"></div>
-        <div className="flex justify-center  w-full gap-4">
-          <ComboBox
-            setSelectedmovie={setSelectedmovie}
-            selctedmovie={selectedmovie}
-          />
+        {Recomandadmovies.length === 0 && (
+          <div className="flex justify-center  w-full gap-4">
+            <ComboBox
+              setSelectedmovie={setSelectedmovie}
+              selctedmovie={selectedmovie}
+            />
 
-          {/* add button  */}
+            {/* add button  */}
 
-          <button
-            className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
-            onClick={addMovie}
-          >
-            Add Movie
-          </button>
-        </div>
+            <button
+              className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
+              onClick={addMovie}
+            >
+              Add Movie
+            </button>
+          </div>
+        )}
+
         <div className="h-10"></div>
         {movies.length > 0 && (
           <>
             <motion.div
-              className="bg-yellow-500 text-white text-center p-4 w-full"
+              className="bg-yellow-500 text-white text-center p-4 w-full flex justify-center items-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1 }}
             >
-              <h1 className="text-2xl font-bold">Selected Movies</h1>
+              <h1 className="text-2xl font-bold">
+                Selected Movies
+                {Recomandadmovies.length === 0 && (
+                  <span
+                    className="text-base bg-red-500 hover:bg-red-400 text-white p-2 pl-1 pr-2 rounded-lg cursor-pointer ml-4"
+                    onClick={() => {
+                      setMovies([]);
+                    }}
+                  >
+                    {" "}
+                    Clear all
+                  </span>
+                )}
+              </h1>
             </motion.div>
             <motion.div
               className="flex justify-center flex-wrap"
@@ -92,25 +108,29 @@ function App() {
                   key={index}
                   className="flex flex-col w-1/6 bg-gray-200 m-4 rounded-2xl relative overflow-hidden shadow-lg"
                 >
-                  <div
-                    className="absolute top-2 right-2 px-2 py-4 text-white rounded-full cursor-pointer text-lg font-bold hover:text-red-700 bg-red-500 hover:bg-red-400"
-                    onClick={() => {
-                      setMovies(movies.filter((m) => m.title !== movie.title));
-                    }}
-                  >
-                    <svg
-                      width="20"
-                      height="5"
-                      viewBox="0 0 200 24"
-                      fill="currentColor"
-                      xmlns="http://www.w3.org/2000/svg"
+                  {Recomandadmovies.length === 0 && (
+                    <div
+                      className="absolute top-2 right-2 px-2 py-4 text-white rounded-full cursor-pointer text-lg font-bold hover:text-red-700 bg-red-500 hover:bg-red-400"
+                      onClick={() => {
+                        setMovies(
+                          movies.filter((m) => m.title !== movie.title)
+                        );
+                      }}
                     >
-                      <path
-                        d="M200 12C200 15.1826 198.736 18.2348 196.485 20.4853C194.235 22.7357 191.183 24 188 24H12C8.8174 24 5.76516 22.7357 3.51472 20.4853C1.26428 18.2348 0 15.1826 0 12C0 8.8174 1.26428 5.76515 3.51472 3.51472C5.76516 1.26428 8.8174 0 12 0H188C191.183 0 194.235 1.26428 196.485 3.51472C198.736 5.76515 200 8.8174 200 12Z"
+                      <svg
+                        width="20"
+                        height="5"
+                        viewBox="0 0 200 24"
                         fill="currentColor"
-                      />
-                    </svg>
-                  </div>
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M200 12C200 15.1826 198.736 18.2348 196.485 20.4853C194.235 22.7357 191.183 24 188 24H12C8.8174 24 5.76516 22.7357 3.51472 20.4853C1.26428 18.2348 0 15.1826 0 12C0 8.8174 1.26428 5.76515 3.51472 3.51472C5.76516 1.26428 8.8174 0 12 0H188C191.183 0 194.235 1.26428 196.485 3.51472C198.736 5.76515 200 8.8174 200 12Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </div>
+                  )}
 
                   <img
                     src={
@@ -161,30 +181,35 @@ function App() {
             {!loading && (
               <div className="flex w-full justify-center ">
                 <div className="flex flex-col justify-center border-2  border-gray-200 mt-8 p-4 gap-4 shadow-lg rounded-lg">
-                  <ControlledRadioButtonsGroup
-                    value={recomandationvars.type}
-                    setValue={updatetype}
-                    title="Recomandation Type"
-                    values={[
-                      {
-                        value: "score",
-                        label: "Recommendation based on Score",
-                      },
-                      {
-                        value: "filter",
-                        label: "Recommendation based on Filter",
-                      },
-                    ]}
-                  />
-                  <DiscreteSlider
-                    label="Movies"
-                    min={5}
-                    max={30}
-                    step={5}
-                    labelDisplay="movie"
-                    value={recomandationvars.items}
-                    updateValue={updateitems}
-                  />
+                  {Recomandadmovies.length == 0 && (
+                    <>
+                      <ControlledRadioButtonsGroup
+                        value={recomandationvars.type}
+                        setValue={updatetype}
+                        title="Recomandation Type"
+                        values={[
+                          {
+                            value: "score",
+                            label: "Recommendation based on Score",
+                          },
+                          {
+                            value: "filter",
+                            label: "Recommendation based on Filter",
+                          },
+                        ]}
+                      />
+                      <DiscreteSlider
+                        label="Movies"
+                        min={5}
+                        max={30}
+                        step={5}
+                        labelDisplay="movie"
+                        value={recomandationvars.items}
+                        updateValue={updateitems}
+                      />
+                    </>
+                  )}
+
                   <motion.button
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -203,7 +228,10 @@ function App() {
                             setLoading(false);
                           }, 1000);
                         });
-                      } else setRecomandadmovies([]);
+                      } else {
+                        setRecomandadmovies([]);
+                        setMovies([]);
+                      }
                     }}
                   >
                     {Recomandadmovies.length == 0

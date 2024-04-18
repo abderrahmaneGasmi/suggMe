@@ -119,31 +119,32 @@ def gestrecomandadbasedonscore(selected_movies):
         
     return moviesmin.sort_values(by=['score', 'vote_average'], ascending=False).drop(columns=['score'])
 
-recomandmovies = gestrecomandadbasedonscore(selected_moviesws)
-recomandmovies2 = getrecomandadbasedonfiltering(selected_moviesws)
-print(recomandmovies.head())
-print(recomandmovies2.head())
-# app = Flask(__name__)
+# recomandmovies = gestrecomandadbasedonscore(selected_moviesws)
+# recomandmovies2 = getrecomandadbasedonfiltering(selected_moviesws)
+app = Flask(__name__)
 
-# CORS(app)
-# # Define routes and functions
-# @app.route('/')
-# def hello():
-#     return 'Hello, World!'
+CORS(app)
+# Define routes and functions
 
-# @app.route('/movies', methods=[ 'POST'])
-# def get_movies():
-#     movies = request.json
-#     # convert movies to dictionary
-#     # movies = [movie.to_dict() for movie in movies]
-#     moviesdemanded = getmoviesfromtitles(
-#         [movie['title'] for movie in movies]
-#     )
-#     predictions = getrecomandadbasedonfiltering(moviesdemanded)
-#     # return 10 items from the predictions
-#     return jsonify(predictions[:10].to_dict('records'))
+@app.route('/movies', methods=[ 'POST'])
+def get_movies():
+    print(request.json['type'])
+    recomandedtype = request.json['type']
+    items = request.json['items'] if 'items' in request.json else 10
+    movies = request.json['movies']
+
+    # convert movies to dictionary
+    # movies = [movie.to_dict() for movie in movies]
+    moviesdemanded = getmoviesfromtitles(
+        [movie['title'] for movie in movies]
+    )
+    if recomandedtype == 'filter':
+        predictions = getrecomandadbasedonfiltering(moviesdemanded)
+    else:
+        predictions = gestrecomandadbasedonscore(moviesdemanded)
+    return jsonify(predictions[:items].to_dict('records'))
 
 
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)

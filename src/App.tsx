@@ -74,12 +74,12 @@ function App() {
         {movies.length > 0 && (
           <>
             <motion.div
-              className="bg-gray-800 text-white text-center p-4 w-full"
+              className="bg-yellow-500 text-white text-center p-4 w-full"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1 }}
             >
-              <h1 className="text-2xl">Selected Movies</h1>
+              <h1 className="text-2xl font-bold">Selected Movies</h1>
             </motion.div>
             <motion.div
               className="flex justify-center flex-wrap"
@@ -193,7 +193,11 @@ function App() {
                     onClick={() => {
                       if (Recomandadmovies.length === 0) {
                         setLoading(true);
-                        sendMovies(movies).then((data) => {
+                        sendMovies({
+                          movies,
+                          type: recomandationvars.type,
+                          items: recomandationvars.items,
+                        }).then((data) => {
                           setRecomandadmovies(data);
                           setTimeout(() => {
                             setLoading(false);

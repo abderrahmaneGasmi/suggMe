@@ -4,6 +4,12 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
+import InfoIcon from "@mui/icons-material/Info";
+import { IconButton, Tooltip } from "@mui/material";
+const tooltips = [
+  "Score Recomadation: it works by sorting the movies by the similartiy of the selected movies using different keys shuch as :genres, keywords, etc",
+  "Filter Recomadation: it works by filtering the movies and keeps only movies that has the similartiy of the selected movies using different keys shuch as :genres, keywords ,etc",
+];
 export default function ControlledRadioButtonsGroup({
   value,
   setValue,
@@ -39,25 +45,61 @@ export default function ControlledRadioButtonsGroup({
         name="controlled-radio-buttons-group"
         value={value}
         onChange={handleChange}
-        className="text-gray-700 dark:text-gray-300"
+        className="text-gray-700 dark:text-gray-300 gap-8"
         row
       >
-        {values.map((item) => (
-          <FormControlLabel
-            value={item.value}
-            key={item.value}
-            control={
-              <Radio
-                sx={{
-                  color: "rgb(234 179 8)",
-                  "&.Mui-checked": {
+        {values.map((item, i) => (
+          <div className="flex">
+            <FormControlLabel
+              value={item.value}
+              key={item.value}
+              control={
+                <Radio
+                  sx={{
                     color: "rgb(234 179 8)",
+                    "&.Mui-checked": {
+                      color: "rgb(234 179 8)",
+                    },
+                  }}
+                />
+              }
+              label={item.label}
+              sx={{
+                marginRight: "0px",
+              }}
+            />
+            <Tooltip
+              title={tooltips[i]}
+              slotProps={{
+                transition: { timeout: 500 },
+                popper: {
+                  modifiers: [
+                    {
+                      name: "offset",
+                      options: {
+                        offset: [0, -14],
+                      },
+                    },
+                  ],
+                },
+              }}
+            >
+              <IconButton
+                sx={{
+                  color: " rgb(59, 130, 246)",
+                  "&:hover": {
+                    color: " rgb(114, 164, 245)",
                   },
                 }}
-              />
-            }
-            label={item.label}
-          />
+              >
+                <InfoIcon
+                  sx={{
+                    fontSize: "20px",
+                  }}
+                />
+              </IconButton>
+            </Tooltip>
+          </div>
         ))}
       </RadioGroup>
     </FormControl>

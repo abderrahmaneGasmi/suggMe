@@ -1,27 +1,21 @@
 from flask import Flask, jsonify, request
 import pandas as pd
-from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MultiLabelBinarizer    
-import logging
 from flask_cors import CORS
-logging.basicConfig(level=logging.DEBUG)
 jsonfile = 'moviescleaned.json'
 movies_df = pd.read_json(jsonfile)
 selected_moviesdataf = movies_df.sample(5)
 
-# make selected_movies as dictionary 
 selected_moviesws = selected_moviesdataf.to_dict('records')
 def removeduplicateitemsinlist(listsw):
     return list(set(listsw))
 def removewhitesspacesinlist(listsw):
     return [x.strip() for x in listsw]
-# Sample movie DataFrame (replace with your actual DataFrame)
 def getrecomandadbasedonfiltering(selected_movies):
 
     selected_original_languages = removeduplicateitemsinlist([movie['original_language'] for movie in selected_movies])
     selected_genres = removeduplicateitemsinlist(removewhitesspacesinlist([genre for movie in selected_movies for genre in movie['genres']]))
     selected_production_companies = removewhitesspacesinlist([movie['production_companies'] for movie in selected_movies])
-    # Convert genres to binary representation using one-hot encoding
     mlb = MultiLabelBinarizer()
     genres_encoded = mlb.fit_transform(movies_df['genres'])
     genres_df = pd.DataFrame(genres_encoded, columns=mlb.classes_)
@@ -31,13 +25,9 @@ def getrecomandadbasedonfiltering(selected_movies):
     production_companies_encoded = mlb.fit_transform([[company] for company in movies_df['production_companies']])
     production_companies_df = pd.DataFrame(production_companies_encoded, columns=mlb.classes_)
 
-    # Combine encoded genres and production companies with the original DataFrame
 
     movies_df_encoded = pd.concat([movies_df, genres_df,languages_df,production_companies_df], axis=1)
-    # print(movies_df_encoded)
-    # Filter movies based on aggregated selected attributes
     filtered_movies_df = movies_df_encoded.copy()
-    print(selected_production_companies)
     filtered_movies_df = filtered_movies_df[
         (filtered_movies_df.loc[:, selected_genres].sum(axis=1) > 0) &
         (filtered_movies_df.loc[:, selected_original_languages].sum(axis=1) > 0) 
@@ -70,7 +60,6 @@ def gestrecomandadbasedonscore(selected_movies):
     selected_production_countries = [movie['production_countries'].split(',') for movie in selected_movies]
     flattened_production_countries = [country for sublist in selected_production_countries for country in sublist]
     unique_production_countries = removeduplicateitemsinlist(flattened_production_countries)
-    trimmed_production_countries = removewhitesspacesinlist(unique_production_countries)
     spoken_languages = [movie['spoken_languages'].split(',') for movie in selected_movies ]
     flattened_spoken_languages = [keyword for sublist in spoken_languages for keyword in sublist]
     unique_spoken_languages = removeduplicateitemsinlist(flattened_spoken_languages)
@@ -103,19 +92,12 @@ def gestrecomandadbasedonscore(selected_movies):
             score +=4
 
 
-    
-    # Add to the score based on the number of selected genres
-    # score += len(set(selected_genres).intersection(row['genres'])) * genre_weight
-    
-    # Assign the calculated score to the 'score' column
         moviesmin.loc[index, 'score'] = score
 
     moviesmin = moviesmin[~moviesmin['title'].isin([movie['title'] for movie in selected_movies])]
         
     return moviesmin.sort_values(by=['score', 'vote_average'], ascending=False).drop(columns=['score'])
 
-# recomandmovies = gestrecomandadbasedonscore(selected_moviesws)
-# recomandmovies2 = getrecomandadbasedonfiltering(selected_moviesws)
 app = Flask(__name__)
 
 CORS(app)
@@ -128,8 +110,6 @@ def get_movies():
     items = request.json['items'] if 'items' in request.json else 10
     movies = request.json['movies']
 
-    # convert movies to dictionary
-    # movies = [movie.to_dict() for movie in movies]
     moviesdemanded = getmoviesfromtitles(
         [movie['title'] for movie in movies]
     )

@@ -7,8 +7,8 @@ import FormLabel from "@mui/material/FormLabel";
 import InfoIcon from "@mui/icons-material/Info";
 import { IconButton, Tooltip } from "@mui/material";
 const tooltips = [
-  "Score Recomadation: it works by sorting the movies by the similartiy of the selected movies using different keys shuch as :genres, keywords, etc",
-  "Filter Recomadation: it works by filtering the movies and keeps only movies that has the similartiy of the selected movies using different keys shuch as :genres, keywords ,etc",
+  "Score Recommendation: it works by sorting the movies by the similartiy of the selected movies using different keys shuch as :genres, keywords, etc",
+  "Filter Recommendation: it works by filtering the movies and keeps only movies that has the similartiy of the selected movies using different keys shuch as :genres, keywords ,etc",
 ];
 export default function ControlledRadioButtonsGroup({
   value,

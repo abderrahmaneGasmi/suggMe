@@ -265,7 +265,7 @@ function App() {
             {" "}
             <div className="bg-gray-800 text-white text-center p-4 w-full">
               <h1 className="text-2xl">
-                Recomandad Movies based on your selctions
+                Recomandad Movies based on your watch history
               </h1>
             </div>
             <div className="flex justify-center flex-wrap">

@@ -103,7 +103,15 @@ app = Flask(__name__)
 CORS(app)
 # Define routes and functions
 
+@app.route('/hello', methods=['GET'])
+def hello():
+    return 'Hello, World!'
+
 @app.route('/movies', methods=[ 'POST'])
+
+
+
+
 def get_movies():
     print(request.json['type'])
     recomandedtype = request.json['type']

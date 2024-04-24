@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./App.css";
 import ComboBox from "./components/AutoComplete";
 import { IMovie } from "./assets/movies";

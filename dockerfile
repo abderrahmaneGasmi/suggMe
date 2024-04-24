@@ -11,9 +11,17 @@ FROM nginx:alpine
 # COPY nginx/nginx.conf /etc/nginx/nginx.conf
 COPY --from=build dist /usr/share/nginx/html
 
-# Expose ports 80 and 5000
 EXPOSE 80
 
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
+
+FROM python:3.9-slim-buster
+WORKDIR /app
+COPY backend/requirement.txt /app
+RUN pip install -r requirement.txt
+COPY backend .
+EXPOSE 5000
+ENV FLASK_APP=recomandation.py
+CMD ["flask", "run", "--host", "0.0.0.0"]
